@@ -1,0 +1,14 @@
+# Line endings: shell scripts and Python must stay LF so they run on Android/Linux hosts
+*.sh            text eol=lf
+*.py            text eol=lf
+*.java          text eol=lf
+*.ini           text eol=lf
+*.md            text eol=lf
+*.txt           text eol=lf
+
+# Binary assets
+*.zip           binary
+*.3dsx          binary
+*.jpg           binary
+*.png           binary
+*.apk           binary

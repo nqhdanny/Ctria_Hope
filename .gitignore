@@ -1,0 +1,29 @@
+# build artefacts
+*.apk
+*.idsig
+*.dex
+work/
+dec/
+build/
+out/
+
+# signing material — never commit
+*.jks
+*.keystore
+*.p12
+keystore/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# editors / OS
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# local scratch
+*.log

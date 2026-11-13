@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  设置界面里的弹窗底：深色壁纸时用这张，浅色壁纸保持 AppCompat 默认的白卡。
+  圆角 24dp、接近不透明的深板岩色，和卡片列表同族，弹出时不会像一块刺眼的白板。
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FF1C2028" />
+    <corners android:radius="24.0dip" />
+</shape>

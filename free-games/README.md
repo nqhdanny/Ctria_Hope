@@ -1,0 +1,39 @@
+# Bundled homebrew
+
+The `.3dsx` files here are open-source, legally redistributable homebrew. They exist so a
+fresh install has something to run instead of an empty list. Both are **unmodified
+upstream release builds** — nothing was patched, re-signed or edited.
+
+| File | Game | Genre | Size | Author | Source | License |
+|---|---|---|---|---|---|---|
+| `TRexGame.3dsx` | T-Rex Game 3DS | endless runner | 1.3 MB | BlyZeDev | https://github.com/BlyZeDev/T-Rex-Game-3DS | MIT |
+| `2048-port-3ds.3dsx` | 2048 | puzzle | 136 KB | 0rientd | https://github.com/0rientd/2048-port-3ds | MIT |
+
+Full license texts: [`licenses/`](licenses/), also shipped inside the APK.
+
+`.3dsx` runs directly — no install step, unlike `.cia`. Copy the file into
+`citra-emu/Games` and it appears in the list.
+
+## Why only two
+
+The rule applied was: **both the code and every asset must be original to the project.**
+That excludes a lot of popular homebrew that is otherwise tempting:
+
+| Excluded | Reason |
+|---|---|
+| Sonic Mania / Sonic CD / Sonic 1&2 ports | reverse-engineered commercial games |
+| Super Metroid native ports, Mario Odyssey demakes | Nintendo IP |
+| Any decompilation-based project | open code, but still needs the original game's assets |
+| GPL-3.0 homebrew (Super Haxagon, 3D Pong, …) | redistributing the binary requires shipping its source too; better as a separate download |
+| Engine ports (OpenJazz, TheXTech, …) | unplayable without the original game's data files |
+| Any 3DS ROM or CIA | not distributable, full stop |
+
+The bar is deliberately conservative: an emulator shipping bundled content is exactly the
+kind of thing that attracts takedown requests, and one questionable file would put the
+whole package at risk.
+
+## Removed
+
+`flappy.3dsx` (Flappy Bird 3DS, MIT) was dropped in 1.0.1 — the screen orientation was
+rotated on this device, which looked like a layout bug. It is not a licensing problem and
+can be re-added if that upstream issue is fixed.
