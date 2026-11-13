@@ -16,16 +16,27 @@ Full license texts: [`licenses/`](licenses/), also shipped inside the APK.
 
 ## Tested and playable, but not bundled
 
-Four more homebrew titles were installed on hardware and confirmed running. They stay out
-of the APK to keep the download small — [`docs/GAMES.md`](../docs/GAMES.md) lists them
-with download links and per-title notes.
+Two more homebrew titles were installed on hardware and confirmed *playable* — not just
+loadable. They stay out of the APK to keep the download small; [`docs/GAMES.md`](../docs/GAMES.md)
+has the download links and the per-title notes.
 
-| Game | License | Size | Note |
+| Game | License | Size | Controls |
 |---|---|---|---|
-| Cookie Collector | CC0 | 197 KB | idle/text, press X |
-| Block Blast | Zlib | 214 KB | block puzzle, touch + sound |
-| Trogdor Reburninated | MIT | 2.5 MB | audio needs `sdmc/3ds/Trogdor-RB/` |
-| Craftus Reloaded | MIT + CC BY-SA textures | 387 KB | 3D sandbox, heaviest of the set |
+| Block Blast | Zlib | 214 KB | touch |
+| Trogdor Reburninated | MIT | 2.5 MB | START + D-pad; audio needs `sdmc/3ds/Trogdor-RB/` |
+
+### Tested and removed
+
+Four titles were dropped after hardware testing. Two never get past their own boot screen,
+two render correctly but ignore every input — which is worse, because it looks like a bug in
+the emulator:
+
+| Game | License | Why |
+|---|---|---|
+| Balatro3DS | GPL-3.0 | stops on the author's own *NO GAME* screen; needs its resource folder |
+| Bottomless Block Barrage | GPL-3.0 | `.3ds` image, both screens black — encrypted, needs a key table |
+| Cookie Collector | CC0 | five presses of X left `You have: 0 cookies` unchanged |
+| Craftus Reloaded | MIT | D-pad, circle pad and touch all fail to move the menu selection |
 
 ## Why only two
 

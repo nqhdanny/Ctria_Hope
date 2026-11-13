@@ -2,7 +2,8 @@
 
 Three facts cover almost everything:
 
-1. **Six games are already there.** They are unpacked from the APK on first launch — nothing to download.
+1. **Two games are already there** — 2048 and T-Rex, unpacked from the APK on first launch. Two more
+   homebrew titles are verified to run (section 5); those are a download away.
 2. **Adding your own game is one file copy** into `citra-emu/Games`.
 3. **Only encrypted retail titles need keys**, and those keys can only come from your own console.
 
@@ -71,33 +72,42 @@ Create `sysdata` yourself if it is not there. The file names are case-sensitive 
 | Game runs, all text is blank boxes | system font | `cbf_std.bcfnt` |
 | Chinese/Korean text shows as `?` | language font | `cbf_zh-Hans-CN.bcfnt` etc. |
 
-Homebrew `.3dsx` needs neither — which is why the six bundled games run on a completely fresh install with no keys and no fonts. Verified.
+Homebrew `.3dsx` needs neither — which is why both bundled games run on a completely fresh install with no keys and no fonts. Verified.
 
 ## 5. Games verified on hardware
 
-Tested one by one on a **HUAWEI Pura X Max** (inner display 1828×2584). All are open-source licensed.
+Verified by *playing* them, not by watching them load. A title that renders but ignores input is
+not playable, and two of those were removed for exactly that.
 
-| Game | Licence | Size | Notes |
-|---|---|---|---|
-| **2048** (bundled) | MIT | 133 KB | Number merging, touch |
-| **T-Rex** (bundled) | MIT | 1.3 MB | Chrome dino runner |
-| **Cookie Collector** | CC0 | 197 KB | Idle/text game, press X |
-| **Block Blast** | Zlib | 214 KB | Block puzzle, touch, sound |
-| **Trogdor Reburninated** | MIT | 2.5 MB | Side-scrolling action; **audio needs its data folder** |
-| **Craftus Reloaded** | MIT + CC BY-SA textures | 387 KB | 3D sandbox builder, the heaviest of the set |
+| Game | Licence | Size | Controls | Notes |
+|---|---|---|---|---|
+| **2048** (bundled) | MIT | 133 KB | touch | number merging |
+| **T-Rex** (bundled) | MIT | 1.3 MB | touch | Chrome dino runner |
+| **Block Blast** | Zlib | 214 KB | touch | block puzzle, sound |
+| **Trogdor Reburninated** | MIT | 2.5 MB | START + D-pad | audio needs `sdmc/3ds/Trogdor-RB/` |
 
-Two that did **not** work, so you don't waste time:
+The pattern is worth knowing before you download: **touch-first titles work; a deep D-pad menu is
+where this emulator gets stuck.**
 
-- **Balatro3DS** (GPL-3.0, 17 MB `.3dsx`) — loads, then stops on the author's own *NO GAME* screen; it needs the resource folder, the single-file build is not self-contained.
-- **Bottomless Block Barrage** (GPL-3.0, `.3ds`) — both screens stay black. `.3ds` images of this kind are usually encrypted.
-
-Trogdor's audio and save data live outside the executable; put the whole `Trogdor-RB` folder at:
+Trogdor keeps its audio and save data outside the executable. Put the whole `Trogdor-RB` folder at:
 
 ```
 /sdcard/citra-emu/sdmc/3ds/Trogdor-RB/
 ```
 
 Without it the game still runs — silently, and without saving.
+
+### Four that were removed
+
+Two never load, two load and ignore input. Both failure modes are recorded here so you don't
+repeat the tests:
+
+| Game | Licence | Why |
+|---|---|---|
+| Balatro3DS | GPL-3.0 | loads, then stops on the author's own *NO GAME* screen — needs its resource folder; the single-file build is not self-contained |
+| Bottomless Block Barrage | GPL-3.0 | `.3ds` image, both screens stay black — encrypted, needs a key table |
+| Cookie Collector | CC0 | renders fine, but five presses of X left `You have: 0 cookies` unchanged |
+| Craftus Reloaded | MIT | title and world menu render, but D-pad, circle pad and touch all fail to move the selection — three screenshots, byte-identical |
 
 ## 6. Troubleshooting
 
@@ -112,6 +122,6 @@ Without it the game still runs — silently, and without saving.
 
 ## 7. Scope
 
-This guide covers one thing: putting games **you legally own** into the emulator. The app ships no ROM, no key table and no console firmware. The six bundled games are original open-source works, their licence texts ship inside the APK and live in [`licenses/`](../licenses/).
+This guide covers one thing: putting games **you legally own** into the emulator. The app ships no ROM, no key table and no console firmware. The two bundled games are original open-source works, their licence texts ship inside the APK and live in [`licenses/`](../licenses/).
 
 If you have no console and no cartridge, the bundled games plus community homebrew are a complete experience — and they need no keys at all.
