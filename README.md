@@ -20,7 +20,7 @@ on top of [Citra MMJ](https://github.com/weihuoya/citra): nothing here changes h
 | | |
 |---|---|
 | App version | 1.4.0 (versionCode 4040) |
-| Package | `org.citra.emu` |
+| Package | `com.ctriahope.emu` (class packages stay `org.citra.emu.*` — the native library registers JNI by that path) |
 | Base | Citra MMJ `3eb22034a` (GPL-2.0) |
 | minSdk / targetSdk | 24 / 34 |
 | Verified on | HUAWEI Pura X Max (`HOP-LX9`), EMUI 16 / AOSP 16 |

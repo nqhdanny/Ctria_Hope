@@ -1,7 +1,8 @@
 # 隐私政策 — Ctria Hope
 
 **最后更新：2026 年 11 月 13 日**
-**适用范围：Ctria Hope（包名 `org.citra.emu`），1.2.0 及之后版本。**
+**适用范围：Ctria Hope（包名 `com.ctriahope.emu`），1.4.3 及之后版本。**
+更早的版本包名为 `org.citra.emu`，政策内容完全相同。
 
 ## 一句话结论
 

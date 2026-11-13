@@ -3,6 +3,30 @@
 All notable changes to Ctria Hope. Version names follow the APK's `versionName`;
 `versionCode` is given because Android uses it for upgrade decisions.
 
+## [1.4.3] — 2026-11-13
+
+Store submission build. The application id changed, so this installs alongside earlier
+builds rather than over them.
+
+- **New application id: `com.ctriahope.emu`.** The package attribute and the two provider
+  authorities moved; the Java package (`org.citra.emu.*`) deliberately did not. The native
+  library registers its JNI methods against those class paths, so renaming them would trade
+  a cosmetic improvement for a `libmain.so` crash on startup. The authorities had to move
+  with the application id: `GameFilePickerActivity` builds them as
+  `getPackageName() + ".filesprovider"`, so a manifest left behind would throw
+  `IllegalArgumentException` the first time a file was shared.
+- **Fixed: games disappeared after granting storage access.** If the user declined the
+  first-run prompt and granted all-files access later, the game directory had already been
+  resolved to `Android/data/<pkg>/files/Games`. That fallback folder also contained the
+  bundled games, which satisfied the "is this directory valid?" check, so the app trusted
+  it forever — the list showed only the two bundled titles and none of the user's own.
+  Now, once all-files access is present, a directory outside `citra-emu/` is migrated back.
+- **Signing.** A new 4096-bit upload key (`CN=Ctria Hope`); the previous keystore existed in
+  a folder that had been copied to removable media and is treated as compromised.
+  `build.sh` now takes `KS_FILE` / `KS_PASS` from the environment and fails loudly when the
+  keystore is missing, instead of silently generating one.
+- **Privacy policy in Russian** (`PRIVACY.ru.md`) and in-app, alongside English and Chinese.
+
 ## [1.4.2] — 2026-11-13
 
 Stability fix. Two null-pointer crashes in the game-list pipeline, both inherited from

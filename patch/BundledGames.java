@@ -66,9 +66,33 @@ public final class BundledGames {
 
             File dir = null;
             String saved = sp.getString(KEY_DIR, null);
+
+            // 公共游戏目录。授权后必须落在这里，用户在文件管理器里才看得到。
+            File publicDir = null;
+            try {
+                File sd = Environment.getExternalStorageDirectory();
+                if (sd != null) {
+                    publicDir = new File(new File(sd, "citra-emu"), GAMES_DIR);
+                }
+            } catch (Throwable ignored) {
+            }
+
             if (saved != null) {
                 File f = new File(saved);
-                if (f.isDirectory() && new File(f, "TRexGame.3dsx").isFile()) {
+                boolean hasBundled = f.isDirectory() && new File(f, "TRexGame.3dsx").isFile();
+                // 老版本在没拿到「所有文件访问」权限时会把游戏释放到
+                // Android/data/<pkg>/files/Games。那份目录同样含有随包游戏，于是这里
+                // 会一直信任它 —— 用户授权后列表里永远只有内置那几个，自己放的 ROM
+                // 一个都看不见。所以授权到手后，只要存的不是公共目录，就整个搬回去。
+                boolean stranded = hasAllFiles() && publicDir != null
+                        && !f.getAbsolutePath().equals(publicDir.getAbsolutePath());
+                if (hasBundled && stranded) {
+                    dbg("dir recover: " + f + " -> " + publicDir);
+                    migrateDir(f, publicDir);
+                    sp.edit().putString(KEY_DIR, publicDir.getAbsolutePath()).apply();
+                    f = publicDir;
+                }
+                if (f.isDirectory() && (new File(f, "TRexGame.3dsx").isFile() || stranded)) {
                     dir = f;
                 }
             }

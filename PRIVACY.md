@@ -1,7 +1,8 @@
 # Privacy Policy — Ctria Hope
 
 **Last updated: 13 November 2026**
-**Applies to:** Ctria Hope (`org.citra.emu`), version 1.2.0 and later.
+**Applies to:** Ctria Hope (`com.ctriahope.emu`), version 1.4.3 and later.
+Earlier builds used the package name `org.citra.emu`; the policy is identical for both.
 
 ## The short version
 

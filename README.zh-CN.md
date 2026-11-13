@@ -18,7 +18,7 @@ Ctria Hope 把折叠屏手机的内屏变成一台掌机：上屏按 3DS 原生 
 | | |
 |---|---|
 | 应用版本 | 1.4.0（versionCode 4040） |
-| 包名 | `org.citra.emu` |
+| 包名 | `com.ctriahope.emu`（Java 类包名仍是 `org.citra.emu.*`，因为原生库按该路径注册 JNI） |
 | 底座 | Citra MMJ `3eb22034a`（GPL-2.0） |
 | minSdk / targetSdk | 24 / 34 |
 | 已验证机型 | HUAWEI Pura X Max（`HOP-LX9`），EMUI 16 / AOSP 16 |

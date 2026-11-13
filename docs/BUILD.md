@@ -102,7 +102,7 @@ the live picture drift apart.
 
 ```bash
 adb install -r citra-hinge.apk
-adb shell am start -n org.citra.emu/.ui.MainActivity
+adb shell am start -n com.ctriahope.emu/org.citra.emu.ui.MainActivity
 adb logcat -c && adb logcat | grep -Ei 'citra|hinge|AndroidRuntime'
 ```
 

@@ -20,7 +20,7 @@ URL = 'https://github.com/nqhdanny/Ctria_Hope/blob/main/PRIVACY.md'
 
 TEXT = u'''CTRIA HOPE - PRIVACY POLICY
 Last updated: 13 November 2026
-Applies to: Ctria Hope (org.citra.emu) 1.4.0 and later
+Applies to: Ctria Hope (com.ctriahope.emu) 1.4.3 and later
 Full text: %(url)s
 ================================================================================
 

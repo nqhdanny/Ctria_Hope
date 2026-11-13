@@ -135,6 +135,8 @@ python3 patch/patch_settings.py | head -6
 python3 patch/patch_dialog.py | head -4
 python3 patch/patch_running.py | head -3
 python3 patch/patch_ag34_manifest.py | head -4
+# applicationId: org.citra.emu -> com.ctriahope.emu（类包名保持不动，JNI 依赖）
+python3 patch/patch_package.py
 python3 patch/patch_ag34.py
 python3 patch/patch_about.py | head -8
 python3 patch/patch_ag_compliance.py
@@ -166,10 +168,10 @@ print('dex 数:', sum(1 for n in names if n.endswith('.dex')), '+1')
 PY
 
 echo "### 6. 对齐 + 签名"
-[ -f hinge.jks ] || keytool -genkeypair -keystore hinge.jks -alias hinge -keyalg RSA -keysize 2048 \
-  -validity 10000 -storepass hinge123 -keypass hinge123 -dname "CN=Hinge Adapt" > /dev/null 2>&1
+# 密钥路径与口令走环境变量：KS_FILE / KS_PASS（仓库里不存任何密钥材料）
+[ -f "$KS_FILE" ] || { echo "ERR: keystore $KS_FILE not found"; exit 1; }
 $BT/zipalign -f -p 4 work/unsigned.apk work/aligned.apk
-$BT/apksigner sign --ks hinge.jks --ks-pass pass:hinge123 --key-pass pass:hinge123 \
+$BT/apksigner sign --ks "$KS_FILE" --ks-pass "pass:$KS_PASS" --key-pass "pass:$KS_PASS" \
   --v1-signing-enabled true --v2-signing-enabled true --out citra-hinge.apk work/aligned.apk
 $BT/apksigner verify --print-certs citra-hinge.apk | head -3
 ls -l citra-hinge.apk
