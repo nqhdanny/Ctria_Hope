@@ -35,6 +35,14 @@ The only games shipped inside the APK are two **MIT-licensed homebrew** titles w
 license texts are included in [`licenses/`](licenses/) — original works, freely
 redistributable, not derived from any commercial product.
 
+The emulator does not ship a key table, shared system fonts, a NAND image, DSP firmware
+or any other console-derived data. Earlier builds inherited those from the upstream
+Android fork; they were removed in 1.4.1 — see [`CHANGELOG.md`](CHANGELOG.md). What this
+means in practice: encrypted retail titles cannot be decrypted, and some games render
+blank text, until you supply your own `aes_keys.txt` and shared font in
+`citra-emu/sysdata/`. That is the intended posture — those files must come from a console
+you own, not from us.
+
 Everything else you run is supplied by you. If you do not own a copy of a game, you have
 no right to play it, and this project gives you no means to acquire one.
 

@@ -91,6 +91,11 @@ docs/           Build guide, layout calibration, screenshots
 The privacy policy is readable offline inside the app: **Settings → About → Privacy
 policy**. It ships in the APK, so it cannot become a dead link.
 
+> **Encrypted retail titles need your own keys.** No key table, shared system font, NAND
+> image or DSP firmware is bundled — see [`DISCLAIMER.md`](DISCLAIMER.md). Ripped-from-a-
+> console files go in `citra-emu/sysdata/`: `aes_keys.txt` to decrypt, `cbf_std.bcfnt` for
+> text. Homebrew and unencrypted titles (the two bundled games) need neither.
+
 > Signature note: this build is signed with a self-generated key. You cannot install
 > it over an official Citra MMJ build — uninstall that first (your `citra-emu/` data
 > folder is untouched by an uninstall).

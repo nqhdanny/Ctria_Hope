@@ -3,6 +3,30 @@
 All notable changes to Ctria Hope. Version names follow the APK's `versionName`;
 `versionCode` is given because Android uses it for upgrade decisions.
 
+## [1.4.1] — 2026-11-13
+
+Clean-room release: the application no longer carries any console data.
+
+The upstream Android fork this is built on bundles console material so that a fresh
+install "just works". That material is not ours to redistribute, and shipping it is the
+single strongest reason a store would reject — or a rights holder would complain about.
+Removed from the APK (13.8 MB, 62% of the previous download):
+
+| Removed | What it was |
+|---|---|
+| `assets/sysdata/aes_keys.txt` | 3DS AES key table (KeyX / KeyY slots) |
+| `assets/sysdata/*.bcfnt` (4 files, 10.8 MB) | console shared system fonts |
+| `assets/nand/**` | NAND contents: system titles, sysdata, camera face database |
+| `assets/sdmc/**` | emulated SD card: a Luma3DS plugin, `dspfirm.cdc` (DSP firmware), PKSM assets |
+
+Consequences, stated plainly: encrypted retail titles can no longer be decrypted, and a
+few games will show blank text, until the user supplies their own `aes_keys.txt` and
+`cbf_std.bcfnt`. Homebrew and unencrypted titles are unaffected — the two bundled games
+still run. A `README.txt` in `assets/sysdata/` explains where those files go.
+
+This also makes the disclaimer true. `DISCLAIMER.md` has always claimed the app ships no
+system file or key; until 1.4.1 that claim was wrong.
+
 ## [1.4.0] — 2026-11-13
 
 AppGallery compliance release. Every change below exists because a store review

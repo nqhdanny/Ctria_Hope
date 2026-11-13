@@ -29,6 +29,36 @@ echo "$CLS"
 $BT/d8 --min-api 24 --lib "$ANDROID_JAR" --output work/dex $CLS
 ls -l work/dex
 
+echo "### 2.4 剥离主机数据 / 密钥 / 固件（审核红线，也是法律红线）"
+# 上游 MMJ 为了"开箱即用"，把从真机 dump 出来的东西打进了 assets：
+#   sysdata/aes_keys.txt   3DS AES 密钥表（KeyX / KeyY）
+#   sysdata/*.bcfnt        3DS 系统字体，10.8 MB
+#   nand/**                NAND 里的系统 title 与 sysdata
+#   sdmc/**                模拟 SD 卡里的 luma 插件、DSP 固件 dspfirm.cdc、PKSM 资源
+# 这些是任天堂的主机固件与密钥，不是本项目的代码：分发它们等于分发绕过技术保护
+# 措施的工具，Google Play / AppGallery 都是直接驳回（且可被权利人投诉）。
+# 删掉之后：开源 .3dsx 照样能跑；商业游戏需要用户自己按 Citra 官方姿势提供
+# citra-emu/sysdata/aes_keys.txt —— 这也是本项目一直声明的法律立场。
+rm -rf dec/assets/sysdata dec/assets/nand dec/assets/sdmc
+mkdir -p dec/assets/sysdata
+cat > dec/assets/sysdata/README.txt <<'SYSDOC'
+No system files are bundled with this application.
+
+This folder used to ship an AES key table and the console system fonts.
+Both belong to the console vendor, not to this project, so they were removed.
+
+If you own a console and have dumped its keys and shared fonts yourself,
+place them here (or in citra-emu/sysdata on your storage) exactly as the
+upstream emulator expects:
+
+    aes_keys.txt            AES key table
+    cbf_std.bcfnt           shared system font
+
+Without them, encrypted titles cannot be decrypted and some games will show
+blank text. Homebrew and unencrypted titles are unaffected.
+SYSDOC
+du -sh dec/assets 2>/dev/null
+
 echo "### 2.5 清理上一版残留的壁纸（用户要求去掉碳纤维背景）"
 rm -f dec/assets/wallpaper.jpg
 
