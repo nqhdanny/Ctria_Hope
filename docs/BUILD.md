@@ -59,6 +59,26 @@ What the script does, in order:
 Every `patch_*.py` first strips its own previous block, then re-inserts it. Re-running the
 whole script any number of times produces the same tree.
 
+### Version numbers
+
+`versionName` / `versionCode` are not set by any patch script — they come from
+`dec/apktool.yml`, i.e. from whatever the base APK declared. Bump them after unpacking a
+base and before building:
+
+```bash
+python3 - <<'PY'
+import io
+p = 'dec/apktool.yml'
+s = io.open(p, encoding='utf-8').read()
+s = s.replace('versionCode: 3932', 'versionCode: 4044')
+s = s.replace('versionName: 1.4.3', 'versionName: 1.4.4')
+io.open(p, 'w', encoding='utf-8', newline='\n').write(s)
+PY
+```
+
+`versionCode` must strictly increase for AppGallery to accept an update, and the store
+build (`1.4.4` / `4044`) is the one whose icons and privacy text ship in this tree.
+
 ## 4. Verifying a build
 
 ```bash
