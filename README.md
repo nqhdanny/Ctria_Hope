@@ -162,7 +162,7 @@ re-run safely; each one strips its previous block first.
 ## Legal
 
 - **License.** GPL-2.0-or-later, inherited from Citra. Full text in
-  [`licenses/GPL-2.0.txt`](licenses/GPL-2.0.txt). Corresponding source for every
+  [`LICENSE`](LICENSE). Corresponding source for every
   published binary is this repository — see [`NOTICE.md`](NOTICE.md) for the exact
   upstream commit and base APK hash.
 - **Privacy.** [`PRIVACY.md`](PRIVACY.md) — the app has no analytics, no ads, no

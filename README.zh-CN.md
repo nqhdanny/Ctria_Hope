@@ -145,7 +145,7 @@ bash patch/build.sh          # -> ./citra-hinge.apk
 
 ## 法律
 
-- **许可**：GPL-2.0-or-later，承自 Citra。全文见 [`licenses/GPL-2.0.txt`](licenses/GPL-2.0.txt)。
+- **许可**：GPL-2.0-or-later，承自 Citra。全文见 [`LICENSE`](LICENSE)。
   每个已发布二进制的对应源码即本仓库——上游 commit 与底座 APK 哈希见 [`NOTICE.md`](NOTICE.md)。
 - **隐私**：[`PRIVACY.zh-CN.md`](PRIVACY.zh-CN.md) —— 无统计、无广告、无账号、无埋点。
 - **声明**：[`DISCLAIMER.zh-CN.md`](DISCLAIMER.zh-CN.md) —— 与任天堂无关，不含 ROM、

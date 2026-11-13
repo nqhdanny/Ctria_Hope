@@ -2,7 +2,7 @@
 
 | File | Covers | License |
 |---|---|---|
-| `GPL-2.0.txt` | Ctria Hope patches, Citra MMJ, Citra | GPL-2.0-or-later |
+| `../LICENSE` (repo root) | Ctria Hope patches, Citra MMJ, Citra | GPL-2.0-or-later |
 | `TRexGame-LICENSE.txt` | `TRexGame.3dsx` | MIT |
 | `2048-LICENSE.txt` | `2048-port-3ds.3dsx` | MIT |
 | `LICENSE.txt` | Generated at build time into the APK — project notice, upstream attribution, source URL | GPL-2.0-or-later |
