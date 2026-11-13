@@ -3,6 +3,33 @@
 All notable changes to Ctria Hope. Version names follow the APK's `versionName`;
 `versionCode` is given because Android uses it for upgrade decisions.
 
+## [1.4.0] — 2026-11-13
+
+AppGallery compliance release. Every change below exists because a store review
+requires it, not because the app needed it.
+
+- **Removed the in-app update check.** Huawei's App Review Guidelines §3.9 forbid an
+  app from updating itself or pulling code from another source, and the co-marketing
+  agreement treats "link out to a non-Huawei distribution channel" as a fineable
+  violation. The `Latest Version` row no longer runs an `AsyncTask`, no longer calls
+  `api.github.com`, and no longer appears: the row now opens the privacy policy.
+- **Privacy policy now ships inside the APK** (`assets/privacy/PRIVACY.txt`, English /
+  Russian / Chinese) and is readable offline at **Settings → About → Privacy policy**.
+  Reviews require the policy to be reachable, and require it to match the declared
+  permissions line by line; a file in the package cannot 404.
+- **Licenses open in-app** rather than in a browser (GPL-2.0 text plus the bundled MIT
+  texts). The only remaining external link is the source-code offer, which is a licence
+  obligation.
+- **Renamed to Ctria Hope**: `android:label`, `app_name` and a new set of icons. The
+  previous name and artwork were upstream Citra brand assets — GPL grants a code
+  licence, not a trademark one.
+- **Removed `android:isGame="true"` and `android:appCategory="game"`.** Declaring an
+  emulator as a game routes it into the game category, which requires a publishing
+  licence in mainland China and a different review track elsewhere. It is a tool.
+- **First-run storage dialog localised** into English / Russian / Chinese; a permission
+  prompt has to explain itself in the language of the market it ships to.
+- **Removed a commercial game name** from an es-ES help string.
+
 ## [1.3.0] — unreleased
 
 Repository publication release.

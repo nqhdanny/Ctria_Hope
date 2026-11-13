@@ -4,7 +4,7 @@
 
 <p align="center">
   <img src="docs/screenshots/game-list.jpg" width="300" alt="Game list">
-  <img src="docs/screenshots/settings.jpg" width="300" alt="Settings">
+  <img src="docs/screenshots/about.jpg" width="300" alt="About — privacy policy and licences read in-app">
 </p>
 
 Ctria Hope turns the inner display of a foldable phone into a handheld 3DS: the top
@@ -19,7 +19,7 @@ on top of [Citra MMJ](https://github.com/weihuoya/citra): nothing here changes h
 
 | | |
 |---|---|
-| App version | 1.2.0 (versionCode 4010) |
+| App version | 1.4.0 (versionCode 4040) |
 | Package | `org.citra.emu` |
 | Base | Citra MMJ `3eb22034a` (GPL-2.0) |
 | minSdk / targetSdk | 24 / 34 |
@@ -57,6 +57,7 @@ skin layer so the result looks deliberate.
 | **First-run provisioning** | On first launch the app creates `citra-emu/Games`, extracts the bundled homebrew and the eight themes, and drops the calibrated control layout — synchronously, before the native layer scans | `patch/BundledGames.java` |
 | **Storage gate** | `targetSdk 34` silently blocks public storage; the app now asks for "all files access" on first launch, deep-links to the system page, and recreates itself on return | `patch/StorageGate.java` |
 | **GPL compliance** | Four license files ship inside the APK; the About screen links to this repository, the license folder and the releases page instead of dead upstream URLs | `patch/gen_licenses.py`, `patch/patch_about.py` |
+| **Store compliance** | No in-app update check (a review rejection under AppGallery §3.9), privacy policy readable offline inside the app, licences read in-app, own name and icon, no `isGame` flag | `patch/AgCompliance.java`, `patch/gen_privacy.py`, `patch/gen_icons.py` |
 
 The layout constants, the calibration method and every trap encountered along the way
 are documented in [`docs/LAYOUT.md`](docs/LAYOUT.md) and [`docs/BUILD.md`](docs/BUILD.md).
@@ -86,6 +87,9 @@ docs/           Build guide, layout calibration, screenshots
    its own game folder, themes or config otherwise.
 4. Put your own `.3dsx` / `.3ds` / `.cia` files in `citra-emu/Games`. Two homebrew
    games are already there so the list is never empty.
+
+The privacy policy is readable offline inside the app: **Settings → About → Privacy
+policy**. It ships in the APK, so it cannot become a dead link.
 
 > Signature note: this build is signed with a self-generated key. You cannot install
 > it over an official Citra MMJ build — uninstall that first (your `citra-emu/` data

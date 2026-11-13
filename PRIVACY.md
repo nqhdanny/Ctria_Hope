@@ -6,17 +6,16 @@
 ## The short version
 
 Ctria Hope collects nothing. There is no account, no sign-in, no analytics, no
-advertising, no crash reporting and no tracking of any kind. The app makes exactly one
-kind of automatic network request — a version check against GitHub's public API — and
-sends no information about you with it. Everything you load into the emulator stays on
-your device.
+advertising, no crash reporting and no tracking of any kind. The app makes no automatic
+network requests at all — it does not even check for updates. Everything you load into
+the emulator stays on your device.
 
 | Question | Answer |
 |---|---|
 | Do you collect personal data? | No |
 | Do you use analytics or ad SDKs? | No |
 | Do you share data with third parties? | No |
-| Can I use it offline? | Yes, entirely — only the optional update check needs a network |
+| Can I use it offline? | Yes, entirely — nothing is ever fetched automatically |
 | Do you need my email or phone number? | No |
 | Is my data sent anywhere when I play? | No |
 
@@ -51,22 +50,25 @@ of them and still run games; the corresponding feature simply will not work.
 | **Camera** | Used only by the emulated 3DS camera — a game that shows a camera view sees the phone camera instead. Frames are passed to the emulated game in memory. The app does not take, store or upload photos. |
 | **Microphone** | Used only by the emulated 3DS microphone for games that listen to it. Audio is passed to the emulated game in memory and is not recorded or transmitted. |
 | **Vibrate** | Haptic feedback. |
-| **Internet**, **network / Wi-Fi state** | The optional update check over HTTPS, and local or online multiplayer when *you* start it. |
+| **Internet**, **network / Wi-Fi state** | Multiplayer only — local or online, and only when *you* start it. Nothing is fetched in the background. |
 | **Install shortcut** | Lets you put a shortcut to an individual game on your home screen. |
 
 ## Network activity, precisely
 
-- **Update check.** The app may request
-  `https://api.github.com/repos/nqhdanny/Ctria_Hope/releases/latest`. This is an
-  ordinary HTTPS GET for a public JSON document. It contains no identifiers, no device
-  information, no usage data. As with any HTTPS request, GitHub can see the IP address
-  it came from; that request is governed by
-  [GitHub's privacy statement](https://docs.github.com/site-policy/privacy-policies/github-privacy-statement).
+- **No automatic requests.** The app does not check for updates, does not phone home,
+  and does not contact any server on its own. Updates are delivered by the store you
+  installed it from, which is also why the in-app update checker that upstream ships
+  was removed.
 - **Multiplayer.** If you configure a room server and join a room, the game data
   needed to play is exchanged with the peers and the room server *you* selected. This
   is off by default and only happens on your explicit action. We operate no servers and
   receive nothing.
-- **Nothing else.** There is no background sync, no ping, no telemetry beacon.
+- **Nothing else.** No background sync, no ping, no telemetry beacon, no crash
+  reporter.
+- **Opening the source code.** The About screen has a "Source code" button that opens
+  this repository in your browser. It is a normal browser link, it only happens when you
+  tap it, and it carries no data about you. It exists because GPL-2.0 requires the
+  source of a distributed binary to be reachable.
 
 ## Third-party components
 
@@ -95,6 +97,12 @@ ever wrote.
 If a future version starts collecting anything — it is not planned — this document will
 be updated before that version ships, with the change called out in the app's release
 notes. The date at the top is the date of the last substantive change.
+
+## Reading this policy inside the app
+
+The full text is readable offline on the device: **Settings → About → Privacy policy**.
+The same text ships inside the APK, so it is available without a network and cannot be
+a dead link.
 
 ## Contact
 

@@ -75,21 +75,47 @@ public final class StorageGate {
             return;
         }
         sAsking = true;
+        // 审核要求：申请敏感权限前必须用文案说明用途，且要跟目标市场语言一致。
+        // 俄罗斯是第一投放市场，这里按系统语言给 en / ru / zh 三套。
+        String lang = java.util.Locale.getDefault().getLanguage();
+        String title, msg, ok, later;
+        if ("ru".equals(lang)) {
+            title = "Нужен доступ к файлам";
+            msg = "Ctria Hope хранит игры, сохранения и темы в папке"
+                    + " \"citra-emu\" во внутренней памяти.\n\n"
+                    + "На следующем экране разрешите доступ ко всем файлам,"
+                    + " иначе список игр и темы оформления не будут подготовлены.";
+            ok = "Открыть настройки";
+            later = "Позже";
+        } else if ("zh".equals(lang)) {
+            title = "需要文件访问权限";
+            msg = "Ctria Hope 把游戏、存档和主题放在存储卡的"
+                    + " \"citra-emu\" 目录里。\n\n"
+                    + "请在下一个页面允许「访问所有文件」，否则游戏列表和面板主题"
+                    + "无法准备。";
+            ok = "打开设置";
+            later = "稍后";
+        } else {
+            title = "File access required";
+            msg = "Ctria Hope keeps games, saves and themes in the"
+                    + " \"citra-emu\" folder on your storage.\n\n"
+                    + "On the next screen please allow access to manage all files,"
+                    + " otherwise the game list and panel themes cannot be prepared.";
+            ok = "Open settings";
+            later = "Later";
+        }
         try {
             new AlertDialog.Builder(a, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                    .setTitle("File access required")
-                    .setMessage("Citra keeps games, saves and themes in the"
-                            + " \"citra-emu\" folder on your storage.\n\n"
-                            + "On the next screen please allow access to manage all files,"
-                            + " otherwise the game list and panel themes cannot be prepared.")
+                    .setTitle(title)
+                    .setMessage(msg)
                     .setCancelable(false)
-                    .setPositiveButton("Open settings", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface d, int which) {
                             openSettings(a);
                         }
                     })
-                    .setNegativeButton("Later", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(later, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface d, int which) {
                             sAsking = false;

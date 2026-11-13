@@ -1,30 +1,9 @@
 #!/bin/bash
-# ---------------------------------------------------------------------------
-# Ctria Hope - one-shot build script
-#
-# Prerequisites (see docs/BUILD.md):
-#   JDK 17, Android SDK build-tools 34.0.0 + platform android-34,
-#   apktool.jar in this directory, Python 3.8+.
-#
-# Layout expected in the working directory (= this repo root):
-#   dec/            apktool-decoded upstream Citra MMJ APK  (apktool d -s)
-#   patch/          this directory
-#   themes/         *.zip panel skins
-#   free-games/     *.3dsx bundled homebrew
-#
-# Env overrides:
-#   JAVA_HOME / ANDROID_HOME   toolchain locations
-#   KS_PASS                    keystore password (default: ctria-hope-dev)
-#   KS_FILE                    keystore path   (default: ./hinge.jks)
-# ---------------------------------------------------------------------------
 set -e
-
-: "${JAVA_HOME:?set JAVA_HOME to a JDK 17 install}"
-: "${ANDROID_HOME:?set ANDROID_HOME to your Android SDK}"
+export JAVA_HOME=/home/daniel/sdk/jdk-17.0.2
+export ANDROID_HOME=/home/daniel/sdk/android-sdk
 export PATH=$JAVA_HOME/bin:$ANDROID_HOME/build-tools/34.0.0:$ANDROID_HOME/platform-tools:$PATH
-
-KS_FILE="${KS_FILE:-hinge.jks}"
-KS_PASS="${KS_PASS:-ctria-hope-dev}"
+cd /home/daniel/hinge
 
 ANDROID_JAR=$ANDROID_HOME/platforms/android-34/android.jar
 BT=$ANDROID_HOME/build-tools/34.0.0
@@ -40,7 +19,8 @@ javac --release 8 -classpath "$ANDROID_JAR" -d work/classes \
   patch/HingeHelper.java \
   patch/BundledGames.java \
   patch/StorageGate.java \
-  patch/SettingsSkin.java
+  patch/SettingsSkin.java \
+  patch/AgCompliance.java
 ls -l work/classes/org/citra/emu/
 
 echo "### 2. dex 化（HingeHelper 及其全部内部类，排除编译用 stub）"
@@ -100,6 +80,22 @@ du -sh dec/assets/themes
 echo "### 2.8 随包许可文件（GPL-2.0 §1 要求：分发二进制必须附带许可全文）"
 python3 patch/gen_licenses.py | tail -8
 
+echo "### 2.9 应用内隐私政策（华为审核要求"可访问"，且要与权限逐条对得上）"
+python3 patch/gen_privacy.py | tail -3
+
+echo "### 2.10 自有图标（上游图标是 Citra 的品牌资产，GPL 不含商标）"
+# patch/icons/ 里是已渲染好的成品；只有在装了 Pillow 的机器上才现场重绘
+if python3 -c "import PIL" 2>/dev/null; then
+  python3 patch/gen_icons.py | tail -2
+else
+  echo "  (Pillow 缺失，使用 patch/icons/ 中的成品)"
+fi
+for d in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+  cp patch/icons/mipmap-$d/ic_citra.png dec/res/mipmap-$d/ic_citra.png
+  cp patch/icons/mipmap-$d/ic_launcher_foreground.png dec/res/mipmap-$d/ic_launcher_foreground.png
+done
+ls -l dec/res/mipmap-xxxhdpi/ic_citra.png dec/res/mipmap-xxxhdpi/ic_launcher_foreground.png
+
 echo "### 3. 锁竖屏 + 注入 smali"
 python3 patch/patch_manifest.py | head -6
 python3 patch/patch_smali.py | head -3
@@ -111,6 +107,8 @@ python3 patch/patch_running.py | head -3
 python3 patch/patch_ag34_manifest.py | head -4
 python3 patch/patch_ag34.py
 python3 patch/patch_about.py | head -8
+python3 patch/patch_ag_compliance.py
+python3 patch/patch_crash_guard.py
 
 echo "### 4. apktool 重新打包"
 java -Xmx4g -jar apktool.jar b dec -o work/rebuilt.apk > work/build.log 2>&1 || { tail -25 work/build.log; exit 1; }
@@ -137,10 +135,10 @@ print('dex 数:', sum(1 for n in names if n.endswith('.dex')), '+1')
 PY
 
 echo "### 6. 对齐 + 签名"
-[ -f "$KS_FILE" ] || keytool -genkeypair -keystore "$KS_FILE" -alias hinge -keyalg RSA -keysize 2048 \
-  -validity 10000 -storepass "$KS_PASS" -keypass "$KS_PASS" -dname "CN=Ctria Hope" > /dev/null 2>&1
+[ -f hinge.jks ] || keytool -genkeypair -keystore hinge.jks -alias hinge -keyalg RSA -keysize 2048 \
+  -validity 10000 -storepass hinge123 -keypass hinge123 -dname "CN=Hinge Adapt" > /dev/null 2>&1
 $BT/zipalign -f -p 4 work/unsigned.apk work/aligned.apk
-$BT/apksigner sign --ks "$KS_FILE" --ks-pass pass:"$KS_PASS" --key-pass pass:"$KS_PASS" \
+$BT/apksigner sign --ks hinge.jks --ks-pass pass:hinge123 --key-pass pass:hinge123 \
   --v1-signing-enabled true --v2-signing-enabled true --out citra-hinge.apk work/aligned.apk
 $BT/apksigner verify --print-certs citra-hinge.apk | head -3
 ls -l citra-hinge.apk

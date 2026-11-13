@@ -4,7 +4,7 @@
 
 <p align="center">
   <img src="docs/screenshots/game-list.jpg" width="300" alt="游戏列表">
-  <img src="docs/screenshots/settings.jpg" width="300" alt="设置界面">
+  <img src="docs/screenshots/about.jpg" width="300" alt="关于页——隐私政策与许可均在应用内阅读">
 </p>
 
 Ctria Hope 把折叠屏手机的内屏变成一台掌机：上屏按 3DS 原生 5:3 比例落在屏幕上半部，
@@ -17,7 +17,7 @@ Ctria Hope 把折叠屏手机的内屏变成一台掌机：上屏按 3DS 原生 
 
 | | |
 |---|---|
-| 应用版本 | 1.2.0（versionCode 4010） |
+| 应用版本 | 1.4.0（versionCode 4040） |
 | 包名 | `org.citra.emu` |
 | 底座 | Citra MMJ `3eb22034a`（GPL-2.0） |
 | minSdk / targetSdk | 24 / 34 |
@@ -50,6 +50,7 @@ Ctria Hope 用实测数据而不是目测解决这三件事，并加了一层皮
 | **首启自动配置** | 首次启动创建 `citra-emu/Games`、释放内置游戏与 8 套主题、落盘标定好的按键布局——且必须同步完成，早于原生层扫描 | `patch/BundledGames.java` |
 | **存储权限闸门** | `targetSdk 34` 下公开存储被静默封锁；应用改为首启申请"所有文件访问"，跳系统页，回来后自我重建 | `patch/StorageGate.java` |
 | **GPL 合规** | 四份许可文件随 APK 分发；关于页改为指向本仓库、许可目录与发布页，替换掉已失效的上游链接 | `patch/gen_licenses.py`、`patch/patch_about.py` |
+| **上架合规** | 移除应用内更新检查（AppGallery 审核指南 §3.9 明确禁止）、隐私政策应用内离线可读、许可应用内阅读、自有应用名与图标、去掉 `isGame` 标记 | `patch/AgCompliance.java`、`patch/gen_privacy.py`、`patch/gen_icons.py` |
 
 布局常量、标定方法与踩过的坑见 [`docs/LAYOUT.md`](docs/LAYOUT.md) 与
 [`docs/BUILD.md`](docs/BUILD.md)。
