@@ -62,6 +62,9 @@ skin layer so the result looks deliberate.
 The layout constants, the calibration method and every trap encountered along the way
 are documented in [`docs/LAYOUT.md`](docs/LAYOUT.md) and [`docs/BUILD.md`](docs/BUILD.md).
 
+**Adding games** — which formats load, where files go, what the key table and system fonts
+are for, and six titles verified on hardware — is in [`docs/GAMES.md`](docs/GAMES.md).
+
 ---
 
 ## Repository layout
@@ -72,7 +75,7 @@ src_overlay/    Original InputOverlay sources the stubs were derived from
 themes/         Eight panel skins, ready to drop into citra-emu/theme
 free-games/     Two MIT-licensed homebrew games (unmodified upstream builds)
 licenses/       GPL-2.0 full text + bundled third-party licenses
-docs/           Build guide, layout calibration, screenshots
+docs/           Build guide, layout calibration, game import guide, screenshots
 ```
 
 ---

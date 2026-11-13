@@ -55,6 +55,10 @@ Ctria Hope 用实测数据而不是目测解决这三件事，并加了一层皮
 布局常量、标定方法与踩过的坑见 [`docs/LAYOUT.md`](docs/LAYOUT.md) 与
 [`docs/BUILD.md`](docs/BUILD.md)。
 
+**怎么加游戏** —— 支持哪些格式、文件放哪、密钥与系统字体是干什么的、以及真机实测能跑
+的六个游戏，见 [`docs/GAMES.zh-CN.md`](docs/GAMES.zh-CN.md)（另有
+[English](docs/GAMES.md) / [Русский](docs/GAMES.ru.md)）。
+
 ---
 
 ## 目录结构
@@ -65,7 +69,7 @@ src_overlay/    InputOverlay 原始源码（桩的来源）
 themes/         8 套面板主题，可直接放进 citra-emu/theme
 free-games/     两个 MIT 开源自制游戏（上游原始构建，未修改）
 licenses/       GPL-2.0 全文 + 随包第三方许可
-docs/           构建指南、布局标定、截图
+docs/           构建指南、布局标定、游戏导入指南、截图
 ```
 
 ---

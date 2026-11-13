@@ -14,6 +14,19 @@ Full license texts: [`licenses/`](licenses/), also shipped inside the APK.
 `.3dsx` runs directly — no install step, unlike `.cia`. Copy the file into
 `citra-emu/Games` and it appears in the list.
 
+## Tested and playable, but not bundled
+
+Four more homebrew titles were installed on hardware and confirmed running. They stay out
+of the APK to keep the download small — [`docs/GAMES.md`](../docs/GAMES.md) lists them
+with download links and per-title notes.
+
+| Game | License | Size | Note |
+|---|---|---|---|
+| Cookie Collector | CC0 | 197 KB | idle/text, press X |
+| Block Blast | Zlib | 214 KB | block puzzle, touch + sound |
+| Trogdor Reburninated | MIT | 2.5 MB | audio needs `sdmc/3ds/Trogdor-RB/` |
+| Craftus Reloaded | MIT + CC BY-SA textures | 387 KB | 3D sandbox, heaviest of the set |
+
 ## Why only two
 
 The rule applied was: **both the code and every asset must be original to the project.**
