@@ -3,6 +3,25 @@
 All notable changes to Ctria Hope. Version names follow the APK's `versionName`;
 `versionCode` is given because Android uses it for upgrade decisions.
 
+## [1.4.2] — 2026-11-13
+
+Stability fix. Two null-pointer crashes in the game-list pipeline, both inherited from
+upstream, both of which would have shown up as "the app crashes" in store compatibility
+testing.
+
+- **Crash on every restart** (`.H(List)` on a null adapter): the pager adapter hands a
+  cached game list to a fragment inside `createFragment()`, before that fragment's
+  `onViewCreated` has run. Guarded at entry — if the adapter is not built yet, the call
+  returns and the next scan delivers the list.
+- **Crash on first run** (`View.setVisibility` on null): the same method toggles the
+  empty-state views and the list, again before they exist. Guarded per call site, so the
+  data still reaches the adapter and only the view updates are skipped.
+- **Crash in the progress callback** (`MainActivity.y0`): progress arrived before
+  `findViewById` had assigned the views.
+
+Verified on hardware: 8 cold restarts and 3 fully wiped first-runs, zero crashes, game
+list populated every time.
+
 ## [1.4.1] — 2026-11-13
 
 Clean-room release: the application no longer carries any console data.

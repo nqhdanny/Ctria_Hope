@@ -139,6 +139,7 @@ python3 patch/patch_ag34.py
 python3 patch/patch_about.py | head -8
 python3 patch/patch_ag_compliance.py
 python3 patch/patch_crash_guard.py
+python3 patch/patch_crash_guard2.py
 
 echo "### 4. apktool 重新打包"
 java -Xmx4g -jar apktool.jar b dec -o work/rebuilt.apk > work/build.log 2>&1 || { tail -25 work/build.log; exit 1; }
