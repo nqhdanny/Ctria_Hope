@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-生成 Ctria Hope 自有图标 → patch/icons/
+"""生成 Ctria Hope 自有图标 → patch/icons/
 
-为什么必须换：上游图标是 Citra 的品牌资产，GPL 给的是代码许可，不含商标；
-带着别人的图标上架，审核侧就是"仿冒/未授权使用品牌"的现成理由。
+为什么必须自绘：上游图标是 Citra 的品牌资产，GPL 只给代码许可，不含商标；
+带别人的图标上架，审核侧就是"仿冒 / 未授权使用品牌"的现成理由。
 
-图形：一块深靛蓝底板上，按真机比例叠放 3DS 的两块屏（上 5:3、下 4:3），
-中间一条青色转轴光带 —— 也就是这个项目做的事：把双屏塞进折叠屏。
+图形（1.4.4 起）：等轴测视角的「打开的双屏设备」——上盖绕铰链张开 106°、
+整体左旋 45°，纯线条描绘（暖白底 + 深红线 + 一枚实心播放三角）。
+刻意不做十字键 / 摇杆 / 肩键 / 品牌配色：外观上不指向任何在售机型。
 
 输出：
-  icons/mipmap-<density>/ic_citra.png              传统图标（含底板）
-  icons/mipmap-<density>/ic_launcher_foreground.png 自适应图标前景（透明，内容在安全区）
+  icons/mipmap-<density>/ic_citra.png               传统图标（含底板）
+  icons/mipmap-<density>/ic_launcher_foreground.png 自适应图标前景（透明）
   icons/ctria-hope-512.png                          商店用 512×512
 
 只用 Pillow；不依赖 numpy。
@@ -20,118 +20,120 @@ import math
 import os
 import sys
 
-from PIL import Image, ImageDraw, ImageFilter
-
-# 调色板与 skins_design.py 的 aqua-blue 一套同源
-BG_TOP = (11, 16, 48)
-BG_BOT = (42, 58, 130)
-SCREEN_TOP = (234, 244, 255)
-SCREEN_BOT = (247, 251, 255)
-ACCENT = (79, 209, 232)
-ACCENT_DIM = (34, 120, 150)
+from PIL import Image, ImageDraw
 
 MASTER = 1024
+SS = 4                       # 超采样，保证线条平滑
+
+# 暖白底板 / 深红线（与商店图标同一套色）
+BG_TOP = (255, 249, 246)
+BG_BOT = (251, 233, 227)
+LINE = (190, 20, 16)
+LINE_SOFT = (190, 20, 16, 170)
+
+# 几何（模型单位，随后按画布归一化）
+YAW = 45.0
+ELEV = 30.0
+OPEN = 106.0
+W, D, T, H = 520.0, 346.0, 18.0, 286.0
+BEZ = 46.0
+RAD = 54.0
+W_MAIN = 60.0
+W_SUB = 34.0
 
 
-def vgrad(w, h, top, bot):
+def _proj(yaw, elev):
+    a, b = math.radians(yaw), math.radians(elev)
+    ca, sa, cb, sb = math.cos(a), math.sin(a), math.cos(b), math.sin(b)
+    return lambda x, y, z: ((x * ca - y * sa), (x * sa + y * ca) * sb - z * cb)
+
+
+def _rrect(u0, v0, u1, v1, r, n=12):
+    pts = []
+    for cx, cy, t0, t1 in ((u0 + r, v0 + r, math.pi, 1.5 * math.pi),
+                           (u1 - r, v0 + r, 1.5 * math.pi, 2 * math.pi),
+                           (u1 - r, v1 - r, 0, 0.5 * math.pi),
+                           (u0 + r, v1 - r, 0.5 * math.pi, math.pi)):
+        for i in range(n + 1):
+            t = t0 + (t1 - t0) * i / n
+            pts.append((cx + r * math.cos(t), cy + r * math.sin(t)))
+    pts.append(pts[0])
+    return pts
+
+
+def _vgrad(w, h, top, bot):
     img = Image.new('RGB', (1, h))
     px = img.load()
     for y in range(h):
         t = y / max(1, h - 1)
-        px[0, y] = (int(top[0] + (bot[0] - top[0]) * t),
-                    int(top[1] + (bot[1] - top[1]) * t),
-                    int(top[2] + (bot[2] - top[2]) * t))
+        px[0, y] = tuple(int(top[i] + (bot[i] - top[i]) * t) for i in range(3))
     return img.resize((w, h), Image.BILINEAR)
 
 
-def glow(size, color, radius, alpha):
-    layer = Image.new('RGBA', size, (0, 0, 0, 0))
-    d = ImageDraw.Draw(layer)
-    d.ellipse([size[0] / 2 - radius, size[1] / 2 - radius,
-               size[0] / 2 + radius, size[1] / 2 + radius],
-              fill=color + (alpha,))
-    return layer.filter(ImageFilter.GaussianBlur(radius / 2.2))
+def draw_device(canvas_px, fill_ratio=0.80, line_w=W_MAIN, sub_w=W_SUB):
+    """在透明画布上画设备线条，返回 RGBA。fill_ratio = 设备占画布比例。"""
+    S = canvas_px * SS
+    P = _proj(YAW, ELEV)
+    th = math.radians(OPEN)
+    ct, st = math.cos(th), math.sin(th)
 
+    def L(u, vv, off=0.0):
+        return (u, vv * ct, T + vv * st + off)
 
-def draw_screens(img, scale=1.0, cx=None, cy=None):
-    """在 img 上画两块屏 + 转轴。scale=1 时占画布约 66%。"""
-    w, h = img.size
-    cx = w / 2 if cx is None else cx
-    cy = h / 2 if cy is None else cy
-    d = ImageDraw.Draw(img, 'RGBA')
+    probe = [L(0, 0), L(W, 0), L(0, H), L(W, H),
+             (0, 0, T), (W, 0, T), (0, D, T), (W, D, T)]
+    pj = [P(*q) for q in probe]
+    minx, maxx = min(q[0] for q in pj), max(q[0] for q in pj)
+    miny, maxy = min(q[1] for q in pj), max(q[1] for q in pj)
+    span = max(maxx - minx, maxy - miny)
+    k = (S * fill_ratio) / span
+    cx, cy = (minx + maxx) / 2, (miny + maxy) / 2
 
-    top_w = 560 * scale
-    top_h = top_w * 3 / 5          # 5:3
-    gap = 46 * scale
-    bot_w = 420 * scale
-    bot_h = bot_w * 3 / 4          # 4:3
+    def Q(q):
+        x, y = P(*q)
+        return ((x - cx) * k + S / 2, (y - cy) * k + S / 2)
 
-    total = top_h + gap + bot_h
-    y0 = cy - total / 2
-    r1 = max(6, int(20 * scale))
-    r2 = max(6, int(16 * scale))
+    img = Image.new('RGBA', (S, S), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    wm = max(2, int(line_w * SS / 3))
+    ws = max(2, int(sub_w * SS / 3))
 
-    # 屏体：外发光先铺一层
-    pad = 14 * scale
-    for box, rad in (
-            ([cx - top_w / 2 - pad, y0 - pad, cx + top_w / 2 + pad, y0 + top_h + pad], r1),
-            ([cx - bot_w / 2 - pad, y0 + top_h + gap - pad, cx + bot_w / 2 + pad,
-              y0 + top_h + gap + bot_h + pad], r2)):
-        d.rounded_rectangle(box, radius=int(rad + pad), fill=ACCENT_DIM + (46,))
+    def stroke(pts3, width, color):
+        pts = [Q(p) for p in pts3]
+        d.line(pts, fill=color, width=width, joint='curve')
+        for p in (pts[0], pts[-1]):
+            d.ellipse([p[0] - width / 2, p[1] - width / 2,
+                       p[0] + width / 2, p[1] + width / 2], fill=color)
 
-    # 上屏（渐变：左上偏亮）
-    top_img = vgrad(int(top_w), int(top_h), (255, 255, 255), SCREEN_TOP)
-    mask = Image.new('L', top_img.size, 0)
-    ImageDraw.Draw(mask).rounded_rectangle([0, 0, top_img.size[0] - 1, top_img.size[1] - 1],
-                                           radius=r1, fill=255)
-    img.paste(top_img, (int(cx - top_w / 2), int(y0)), mask)
+    # 底座顶面
+    stroke([(u, vv, T) for u, vv in _rrect(0, 0, W, D, RAD)], wm, LINE + (255,))
+    # 上盖外壳 + 两屏内框
+    stroke([L(u, vv) for u, vv in _rrect(0, 0, W, H, RAD)], wm, LINE + (255,))
+    stroke([L(u, vv, 1) for u, vv in _rrect(BEZ, BEZ, W - BEZ, H - BEZ, max(10, RAD - 10))],
+           ws, LINE_SOFT)
+    stroke([(u, vv, T + 1) for u, vv in _rrect(BEZ, BEZ, W - BEZ, D - BEZ, max(10, RAD - 10))],
+           ws, LINE_SOFT)
 
-    # 上屏中央一枚播放三角：让"这是一块在放东西的屏"一眼可读
-    tri = 44 * scale
-    tcx, tcy = cx, y0 + top_h / 2
-    d.polygon([(tcx - tri * 0.42, tcy - tri * 0.55),
-               (tcx - tri * 0.42, tcy + tri * 0.55),
-               (tcx + tri * 0.6, tcy)],
-              fill=ACCENT + (225,))
+    # 播放三角
+    cxx, cyy, s = W / 2, H * 0.52, 40
+    tri = [L(cxx - s * 0.42, cyy - s * 0.60, 1), L(cxx + s * 0.60, cyy, 1),
+           L(cxx - s * 0.42, cyy + s * 0.60, 1)]
+    d.polygon([Q(p) for p in tri], fill=LINE + (255,))
 
-    # 下屏
-    bot_img = vgrad(int(bot_w), int(bot_h), SCREEN_BOT, (222, 236, 250))
-    mask2 = Image.new('L', bot_img.size, 0)
-    ImageDraw.Draw(mask2).rounded_rectangle([0, 0, bot_img.size[0] - 1, bot_img.size[1] - 1],
-                                            radius=r2, fill=255)
-    img.paste(bot_img, (int(cx - bot_w / 2), int(y0 + top_h + gap)), mask2)
-
-    # 转轴光带
-    hy0 = y0 + top_h + gap * 0.28
-    hy1 = y0 + top_h + gap * 0.72
-    d.rounded_rectangle([cx - top_w / 2 - 6, hy0, cx + top_w / 2 + 6, hy1],
-                        radius=int((hy1 - hy0) / 2), fill=ACCENT + (235,))
-    # 轴心三个小孔，一眼看出是折叠结构
-    for k in (-1, 0, 1):
-        r = 7 * scale
-        x = cx + k * 150 * scale
-        d.ellipse([x - r, (hy0 + hy1) / 2 - r, x + r, (hy0 + hy1) / 2 + r],
-                  fill=BG_TOP + (200,))
-    return img
+    return img.resize((canvas_px, canvas_px), Image.LANCZOS)
 
 
 def full_icon(size=MASTER):
-    img = vgrad(size, size, BG_TOP, BG_BOT).convert('RGBA')
-    img.alpha_composite(glow((size, size), ACCENT, size * 0.34, 26))
-    # 左上高光
-    hi = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-    ImageDraw.Draw(hi).ellipse([-size * 0.35, -size * 0.45, size * 0.85, size * 0.55],
-                               fill=(120, 170, 255, 34))
-    img.alpha_composite(hi.filter(ImageFilter.GaussianBlur(size * 0.12)))
-    draw_screens(img, scale=size / MASTER * 0.98)
-    return img
+    """带底板的正方形图标。"""
+    bg = _vgrad(size, size, BG_TOP, BG_BOT).convert('RGBA')
+    dev = draw_device(size, fill_ratio=0.80)
+    bg.alpha_composite(dev)
+    return bg
 
 
 def foreground(size=MASTER):
-    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-    # 自适应图标安全区：内容收在中间约 58%
-    draw_screens(img, scale=size / MASTER * 0.86)
-    return img
+    """自适应图标前景：透明，内容收在安全区（约 62%）。"""
+    return draw_device(size, fill_ratio=0.62)
 
 
 DENSITIES = [('mdpi', 48, 108), ('hdpi', 72, 162), ('xhdpi', 96, 216),

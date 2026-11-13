@@ -3,6 +3,27 @@
 All notable changes to Ctria Hope. Version names follow the APK's `versionName`;
 `versionCode` is given because Android uses it for upgrade decisions.
 
+## [1.4.4] — 2026-11-13 (versionCode 4044)
+
+New icon, and the code that draws it.
+
+- **Icon redesigned from scratch.** An isometric view of an open dual-screen device:
+  the lid hinged at the far edge, rotated 45° to the left, drawn as line art on a
+  warm-white plate with deep red strokes and one solid play triangle. The previous
+  drawing borrowed too much of the DS family silhouette (two stacked screens in a
+  clamshell, hinge band, pivot holes) — recognisable enough to be a trademark problem
+  in a store listing. The replacement keeps only the generic idea of "a hinge, two
+  panels", and deliberately omits the D-pad, the circle pad, shoulder buttons and any
+  vendor colour scheme.
+- **Adaptive icon background follows the new plate.** `<color name="ic_launcher_background">`
+  was navy `#0B1030`, matched to the old icon. Left alone, the launcher would have
+  composited red strokes onto navy — the contrast collapses. It is now `#FFF9F6`.
+- **`patch/gen_icons.py` rewritten** so the icon is reproducible from source: the
+  geometry is projected by hand (yaw 45°, elevation 30°, lid opened 106°), not traced
+  from a render. Pillow only, no numpy, 4× supersampling for the strokes.
+- Everything else is unchanged from 1.4.3: same application id, same signing key, same
+  storage handling, no functional difference to the emulator itself.
+
 ## [1.4.3] — 2026-11-13
 
 Store submission build. The application id changed, so this installs alongside earlier
